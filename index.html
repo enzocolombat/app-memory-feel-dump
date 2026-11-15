@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Journal</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Journal">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#EAE6DC">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAE6DC;--tk:#FBFAF6;--ink:#17171A;--mute:#8A857A;--line:#D4CEBF;--acc:#1E4D40;--on:#FBFAF6;--mk:#F1E0A0;--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0F0F0E;--tk:#1A1A18;--ink:#EDEAE2;--mute:#8F8A7E;--line:#3A3832;--acc:#8FD0B9;--on:#0F0F0E;--mk:#5C4F17;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:540px;margin:0 auto;padding:28px 18px 56px}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin:0 0 6px}
+h1{font:italic 500 clamp(46px,15vw,68px)/.95 var(--serif);letter-spacing:-.02em;margin:0 0 22px}
+.search{position:relative;margin-bottom:26px}
+.search input{width:100%;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);padding:10px 36px 10px 30px;font:500 20px var(--serif);outline:none;border-radius:0}
+.search input:focus{border-color:var(--ink)}
+.search input::placeholder{color:var(--mute);font-style:italic}
+.search svg{position:absolute;left:2px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--mute);fill:none;stroke-width:1.8;stroke-linecap:round}
+.search button{position:absolute;right:0;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mute);font-size:24px;width:36px;height:36px;cursor:pointer;display:none}
+.search.has button{display:block}
+.count{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 14px}
+.tk{background:var(--tk);border-radius:3px;padding:22px 22px 18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.05),0 18px 28px -20px rgba(0,0,0,.45)}
+.tk-h{display:flex;justify-content:space-between;align-items:center;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.tag{color:var(--acc);border:1px solid var(--acc);padding:3px 8px;letter-spacing:.14em}
+h2{font:600 30px/1.1 var(--serif);letter-spacing:-.01em;margin:10px 0 8px}
+ul{list-style:none;margin:0;padding:0}
+li{display:grid;grid-template-columns:46px 1fr 30px;gap:6px;align-items:start;padding:11px 0;border-bottom:1px dotted var(--line)}
+li.new{animation:in .3s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){li.new{animation:none}}
+.tm{font:400 12px var(--mono);color:var(--mute);padding-top:6px}
+.tx{font:500 21px/1.28 var(--serif);overflow-wrap:anywhere}
+li.blank{display:block;border:0;color:var(--mute);font:italic 500 20px var(--serif);padding:14px 0 6px}
+.del{border:0;background:none;color:var(--mute);font-size:20px;line-height:1;width:30px;height:30px;cursor:pointer;opacity:.7}
+.add{display:flex;align-items:center;gap:12px;margin-top:14px}
+.add input{flex:1;min-width:0;border:0;border-bottom:1px solid var(--ink);background:none;color:var(--ink);font:italic 500 21px var(--serif);padding:8px 0;outline:none;border-radius:0}
+.add input::placeholder{color:var(--mute)}
+.add button{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--acc);color:var(--on);font:400 24px/1 var(--mono);cursor:pointer}
+.perf{position:relative;border-top:1.5px dashed var(--line);margin:22px -22px 16px}
+.perf::before,.perf::after{content:"";position:absolute;top:-10px;width:20px;height:20px;border-radius:50%;background:var(--bg)}
+.perf::before{left:-10px}.perf::after{right:-10px}
+.tk-f{display:flex;justify-content:space-between;font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.bar{height:26px;margin-top:14px;opacity:.85;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 8px,var(--ink) 8px 11px,transparent 11px 13px,var(--ink) 13px 14px,transparent 14px 17px)}
+mark{background:var(--mk);color:inherit;padding:0 2px;border-radius:2px}
+.empty{font:italic 500 21px var(--serif);color:var(--mute)}
+.foot{text-align:center;font:400 11px var(--mono);letter-spacing:.1em;color:var(--mute);margin-top:8px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Carnet de pensées</p>
+  <h1>Journal</h1>
+
+  <div class="search" id="sbox">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Chercher dans mes pensées" autocomplete="off" aria-label="Rechercher">
+    <button id="clr" aria-label="Effacer la recherche">×</button>
+  </div>
+
+  <article class="tk" id="today">
+    <div class="tk-h"><span id="no"></span><span class="tag">Aujourd’hui</span></div>
+    <h2 id="dname"></h2>
+    <ul id="tl"></ul>
+    <div class="add">
+      <input id="t" placeholder="Une pensée, une chose faite…" autocomplete="off" autocapitalize="sentences" enterkeyhint="done" aria-label="Nouvelle pensée">
+      <button id="go" aria-label="Ajouter">+</button>
+    </div>
+    <div class="perf"></div>
+    <div class="tk-f"><span>Total</span><span id="tot"></span></div>
+    <div class="bar"></div>
+  </article>
+
+  <div id="past"></div>
+  <p class="foot">Tes pensées restent sur cet appareil.</p>
+</div>
+
+<script>
+const KEY='ma-journee-v1';
+let items=[],q='',newId=null;
+try{items=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){items=[]}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}};
+const $=id=>document.getElementById(id);
+const z=n=>String(n).padStart(2,'0');
+const dkey=d=>d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const cnt=(n,w)=>n+' '+w+(n>1?'s':'');
+function label(k){
+  const d=new Date(k+'T12:00:00'),o={weekday:'long',day:'numeric',month:'long'};
+  if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';
+  return cap(d.toLocaleDateString('fr-FR',o));
+}
+function hl(s,w){
+  if(!w.length)return esc(s);
+  let n='',m=[];
+  for(let i=0;i<s.length;i++)for(const c of norm(s[i])){n+=c;m.push(i)}
+  const on=new Array(s.length).fill(0);
+  w.forEach(x=>{let p=n.indexOf(x);while(p>-1){for(let k=p;k<p+x.length;k++)on[m[k]]=1;p=n.indexOf(x,p+1)}});
+  let o='',open=0;
+  for(let i=0;i<s.length;i++){
+    if(on[i]&&!open){o+='<mark>';open=1}
+    if(!on[i]&&open){o+='</mark>';open=0}
+    o+=esc(s[i]);
+  }
+  return o+(open?'</mark>':'');
+}
+function row(i,w){
+  const t=new Date(i.ts);
+  return '<li class="'+(i.id===newId?'new':'')+'"><span class="tm">'+z(t.getHours())+':'+z(t.getMinutes())+'</span><span class="tx">'+hl(i.t,w)+'</span><button class="del" data-id="'+i.id+'" aria-label="Supprimer">×</button></li>';
+}
+const nn=n=>'N° '+String(n).padStart(4,'0');
+function tk(k,list,w,n){
+  return '<article class="tk"><div class="tk-h"><span>'+nn(n)+'</span><span>'+k.split('-').reverse().join('.')+'</span></div><h2>'+label(k)+'</h2><ul>'+
+    list.map(i=>row(i,w)).join('')+'</ul><div class="perf"></div><div class="tk-f"><span>Total</span><span>'+
+    cnt(list.length,w.length?'résultat':'pensée')+'</span></div><div class="bar"></div></article>';
+}
+function render(){
+  const today=dkey(new Date());
+  const sorted=items.slice().sort((a,b)=>a.ts-b.ts);
+  const nums={};
+  [...new Set(sorted.map(i=>i.d).concat(today))].sort().forEach((k,i)=>nums[k]=i+1);
+  const by=(list)=>{const o={};list.forEach(i=>(o[i.d]=o[i.d]||[]).push(i));return o};
+  $('sbox').classList.toggle('has',!!q);
+  $('today').classList.toggle('hide',!!q);
+  if(q){
+    const w=norm(q).split(/\s+/).filter(Boolean);
+    const res=sorted.filter(i=>w.every(x=>norm(i.t).includes(x)));
+    const g=by(res);
+    $('past').innerHTML=res.length
+      ?'<p class="count">'+cnt(res.length,'résultat')+'</p>'+Object.keys(g).sort().reverse().map(k=>tk(k,g[k],w,nums[k])).join('')
+      :'<p class="empty">Aucune pensée ne contient « '+esc(q)+' ».</p>';
+  }else{
+    const g=by(sorted),td=g[today]||[];
+    $('no').textContent=nn(nums[today]);
+    $('dname').textContent=label(today);
+    $('tl').innerHTML=td.length?td.map(i=>row(i,[])).join(''):'<li class="blank">Une page blanche. Écris ce qui te traverse l’esprit.</li>';
+    $('tot').textContent=cnt(td.length,'pensée');
+    $('past').innerHTML=Object.keys(g).sort().reverse().filter(k=>k!==today).map(k=>tk(k,g[k],[],nums[k])).join('');
+  }
+  newId=null;
+}
+function add(){
+  const v=$('t').value.trim();
+  if(!v)return;
+  const now=new Date();
+  newId=now.getTime()+Math.random();
+  items.push({id:newId,t:v,d:dkey(now),ts:now.getTime()});
+  save();$('t').value='';render();$('t').focus();
+}
+$('go').onclick=add;
+$('t').addEventListener('keydown',e=>{if(e.key==='Enter')add()});
+$('q').addEventListener('input',e=>{q=e.target.value.trim();render()});
+$('clr').onclick=()=>{$('q').value='';q='';render();$('q').focus()};
+document.querySelector('.wrap').addEventListener('click',e=>{
+  const b=e.target.closest('.del');
+  if(!b)return;
+  items=items.filter(i=>String(i.id)!==b.dataset.id);
+  save();render();
+});
+render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
